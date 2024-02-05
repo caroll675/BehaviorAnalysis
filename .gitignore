@@ -1,3 +1,2 @@
 .venv/
-
-./bp_variance.py
+bp_variance.py
