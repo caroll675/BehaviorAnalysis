@@ -1,10 +1,17 @@
 import select_roi as sr
+import cutoff 
+import numpy as np
+from scipy.ndimage import gaussian_filter1d
+from collections import Counter
 
-def clustering(corner_arr, Dataframe):
+def clustering(corner_arr, Dataframe, df_path):
     # FIRST CLUSTERING CRITERIA
     Dataframe['var'] = Dataframe['var'].replace('--', 1).fillna(1).astype(float)
-    Dataframe['var'] = gaussian_moving_average(Dataframe['var'], sigma=2)
-    Dataframe["cluster"] = Dataframe["var"].apply(lambda x: "immobility" if x < 100 else ("nonlocomotion" if x < 10000 else "locomotion"))
+    Dataframe['log_var'] = np.log1p(Dataframe['var'])
+    cutoff1, cutoff2 = cutoff.find_cutoff(Dataframe, df_path)
+    print(cutoff1, cutoff2)
+    # Dataframe['var'] = gaussian_moving_average(Dataframe['var'], sigma=2)
+    Dataframe["cluster"] = Dataframe["log_var"].apply(lambda x: "immobility" if x < cutoff1 else ("nonlocomotion" if x < cutoff2 else "locomotion"))
     # SECOND CLUSTERING CRITERIA
     if corner_arr:
         Dataframe['cluster2'] = ['None'] * len(Dataframe)
@@ -22,8 +29,6 @@ def clustering(corner_arr, Dataframe):
     return Dataframe
 
 
-from collections import Counter
-
 def moving_mode(data, window_size):
     smoothed_data = []
     for i in range(len(data)):
@@ -33,8 +38,6 @@ def moving_mode(data, window_size):
     return smoothed_data
 
 
-import numpy as np
-from scipy.ndimage import gaussian_filter1d
 
 def gaussian_moving_average(data, sigma):
     smoothed_data = gaussian_filter1d(data, sigma)
