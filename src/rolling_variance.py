@@ -45,7 +45,3 @@ def variance(Dataframe, window=90, pcutoff=0.7):
     Dataframe = Dataframe.reset_index(drop=True)
     return rolling_variance(Dataframe, body_parts, window, pcutoff)
 
-# Dataframe = pd.read_csv("C:\\Users\\chang\\Documents\\GitHub\\PD-Mice-Behavior-Analysis\\DataDiscovery\\short_video.csv")
-# save = "C:\\Users\\chang\\Documents\\GitHub\\PD-Mice-Behavior-Analysis\\DataDiscovery\\short_video_var.csv"
-# Dataframe = variance(Dataframe, window=90, pcutoff=0.7)
-# Dataframe.to_csv(save, index=False)
